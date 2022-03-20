@@ -1,0 +1,8 @@
+pip~=20.2.1
+certifi~=2021.10.8
+idna~=3.3
+urllib3~=1.26.9
+setuptools~=49.2.1
+future~=0.18.2
+requests~=2.27.1
+Flask~=2.0.3
