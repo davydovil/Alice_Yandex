@@ -10,4 +10,4 @@ me = client.get_me()
 school_id = client.get_my_context()['schools'][0]['id']
 my_id = me['id']
 
-client.my_homeworks("2022-03-15 00:00:00", "2022-03-18 23:59:00")
+client.my_homeworks("2022-03-10 00:00:00", "2022-03-10 23:59:00")
