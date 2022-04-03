@@ -34,7 +34,7 @@ def handle_dialog(req, res):
                                   'разрешите мне просматривать ваш ШП '
         res['response']['tts'] = 'Привет! Я Алиса и я науч+илась работать с школьным порталом. Для начала раб+оты ' \
                                  'разрешите мне просматривать ваш ШП '
-        res['response']['buttons']['url'] = 'https://login.school.mosreg.ru/oauth2?response_type=token&client_id=bafe713c96a342b194d040392cadf82b&scope=CommonInfo,ContactInfo,FriendsAndRelatives,EducationalInfo,SocialInfo&redirect_uri='
+
         return
 
     if req['request']['original_utterance'].lower() in [
