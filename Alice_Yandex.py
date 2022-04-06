@@ -3,6 +3,7 @@ import os
 from flask import Flask, request
 import logging
 import json
+from smapi import Client
 
 app = Flask(__name__)
 
@@ -20,6 +21,7 @@ def main():
             'end_session': False
         }
     }
+    token = ''
     handle_dialog(request.json, response)
 
     logging.info(f'Response:  {response!r}')
@@ -46,6 +48,10 @@ def handle_dialog(req, res):
         res['response']['text'] = 'Спасибо, доступ предоставлен, теперь я могу сообщать Вам оценки' \
                                   f'Ваш токен: {token}'
         return
+    
+    if 'домашнее задание на понедельник' in req['request']['original_utterance']:
+        client = Client(token)
+        res['response']['text'] = client.my_homeworks("2022-04-11 00:00:00", "2022-04-11 23:59:00")
 
     # Если нет, то убеждаем его купить слона!
     res['response']['text'] = \
