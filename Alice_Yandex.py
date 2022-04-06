@@ -40,11 +40,11 @@ def handle_dialog(req, res):
 
         return
 
-    if 'token' in req['request']['original_utterance']:
+    if 'https://login.school.mosreg.ru/oauth2/Authorization/Result?response_type=token&client_id' in req['request']['original_utterance']:
         # Пользователь согласился, прощаемся.
         token = req['request']['original_utterance'][255:-7]
-        res['response']['text'] = 'Я пока не умею смотреть ДЗ, но это не на долго'
-        res['response']['end_session'] = True
+        res['response']['text'] = 'Спасибо, доступ предоставлен, теперь я могу сообщать Вам оценки' \
+                                  f'Ваш токен: {token}'
         return
 
     # Если нет, то убеждаем его купить слона!
