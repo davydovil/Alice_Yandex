@@ -31,16 +31,18 @@ def handle_dialog(req, res):
 
     if req['session']['new']:
         res['response']['text'] = 'Привет! Я Алиса и я научилась работать с школьным порталом. Для начала работы ' \
-                                  'разрешите мне просматривать ваш ШП '
+                                  'разрешите мне просматривать ваш ШП ' \
+                                  'Для этого перейдите по ссылке: https://login.school.mosreg.ru/oauth2?response_type=token&client_id=bafe713c96a342b194d040392cadf82b&scope=CommonInfo,ContactInfo,FriendsAndRelatives,EducationalInfo,SocialInfo&redirect_uri=' \
+                                  'После того, как дадите разрешение, скопируйте ссылку страницы, на которую вас перенаправили и отправьте её мне:)'
+
         res['response']['tts'] = 'Привет! Я Алиса и я науч+илась работать с школьным порталом. Для начала раб+оты ' \
-                                 'разрешите мне просматривать ваш ШП '
+                                 'разрешите мне просматривать ваш ШП. Для этого перейдите по ссылке.'
 
         return
 
-    if req['request']['original_utterance'].lower() in [
-        'сколько задали на понедельник'
-    ]:
+    if 'token' in req['request']['original_utterance']:
         # Пользователь согласился, прощаемся.
+        token = req['request']['original_utterance'][255:-7]
         res['response']['text'] = 'Я пока не умею смотреть ДЗ, но это не на долго'
         res['response']['end_session'] = True
         return
