@@ -47,7 +47,7 @@ def handle_dialog(req, res):
 
     # Если нет, то убеждаем его купить слона!
     res['response']['text'] = \
-        f"Я пока не умею смотреть ДЗ, но это не на долго"
+        f"Спросите что-нибудь полегче"
     res['response']['end_session'] = True
     return
 
