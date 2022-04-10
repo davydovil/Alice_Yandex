@@ -587,7 +587,7 @@ class Client(APIBase):
             data = dt.datetime(int(i["targetDate"][:4]), int(i["targetDate"][5:7]), int(i["targetDate"][8:10]))
             date = data.strftime("%A %d %B")
             lesson = self.get_lesson(i["lesson"])
-            res += f'Домашнее задание на {date} по предмету {lesson["subject"]["name"]}({lesson["number"]} урок):{i["text"]}')
+            res += f'Домашнее задание на {date} по предмету {lesson["subject"]["name"]}({lesson["number"]} урок):{i["text"]}'
             #if self.get_marks_by_lesson(i['lesson']):
                # for j in self.get_marks_by_lesson(i['lesson']):
                 #    print(f"{j['value']} - {self.get_person(j['person_str'])['shortName']}")
