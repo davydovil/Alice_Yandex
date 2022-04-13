@@ -51,7 +51,7 @@ def handle_dialog(req, res):
     
     if 'домашнее задание на завтра' in req['request']['original_utterance']:
         client = Client('bnXpnw48AaqXawOW3OdZso40Q1kVYivv')
-        res['response']['text'] = client.my_homeworks("2022-04-14")
+        res['response']['text'] = client.my_homeworks("2022-04-14")[1]
 
     # Если нет, то убеждаем его купить слона!
     res['response']['text'] = \
