@@ -577,17 +577,14 @@ class Client(APIBase):
         return self.get(f'work-types/{school_id}')
 
     # My new function
-    def my_homeworks(self, start_date, end_date):
-        res = ''
-        homework = \
-            self.get_school_homework_for_date_period(self.get_my_context()['schools'][0]['id'], start_date,
-                                                     end_date)["works"]
+    def my_homeworks(self, date):
+        homework = client.get_school_homework_for_date_period(school_id, f'{date} 00:00:00', f'{date} 23:59:00')[
+            "works"]
         homework.sort(key=operator.itemgetter('targetDate'))
         for i in homework:
-            data = dt.datetime(int(i["targetDate"][:4]), int(i["targetDate"][5:7]), int(i["targetDate"][8:10]))
+            data = datetime.datetime(int(i["targetDate"][:4]), int(i["targetDate"][5:7]), int(i["targetDate"][8:10]))
             date = data.strftime("%A %d %B")
-            lesson = self.get_lesson(i["lesson"])
-            res += f'Домашнее задание на {date} по предмету {lesson["subject"]["name"]}({lesson["number"]} урок):{i["text"]}')
-            #if self.get_marks_by_lesson(i['lesson']):
-               # for j in self.get_marks_by_lesson(i['lesson']):
-                #    print(f"{j['value']} - {self.get_person(j['person_str'])['shortName']}")
+            lesson = client.get_lesson(i["lesson"])
+            print(
+                f'Домашнее задание на {date} по предмету {lesson["subject"]["name"]}({lesson["number"]} урок):{i["text"]}')
+
