@@ -49,9 +49,9 @@ def handle_dialog(req, res):
                                   f'Ваш токен: {token}'
         return
     
-    if 'домашнее задание на понедельник' in req['request']['original_utterance']:
-        client = Client(token)
-        res['response']['text'] = client.my_homeworks("2022-04-11 00:00:00", "2022-04-11 23:59:00")
+    if 'домашнее задание на завтра' in req['request']['original_utterance']:
+        client = Client('bnXpnw48AaqXawOW3OdZso40Q1kVYivv')
+        res['response']['text'] = client.my_homeworks("2022-04-14")
 
     # Если нет, то убеждаем его купить слона!
     res['response']['text'] = \
