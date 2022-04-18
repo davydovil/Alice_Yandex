@@ -3,6 +3,8 @@ import logging
 import os
 
 from flask import Flask, request
+import logging
+import json
 from smapi import Client
 
 app = Flask(__name__)

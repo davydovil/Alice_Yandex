@@ -1,3 +1,4 @@
+import datetime
 import operator
 import datetime as dt
 
@@ -578,13 +579,15 @@ class Client(APIBase):
 
     # My new function
     def my_homeworks(self, date):
-        homework = client.get_school_homework_for_date_period(school_id, f'{date} 00:00:00', f'{date} 23:59:00')[
+        a = {}
+        school_id = self.get_my_context()['schools'][0]['id']
+        homework = self.get_school_homework_for_date_period(school_id, f'{date} 00:00:00', f'{date} 23:59:00')[
             "works"]
         homework.sort(key=operator.itemgetter('targetDate'))
         for i in homework:
             data = datetime.datetime(int(i["targetDate"][:4]), int(i["targetDate"][5:7]), int(i["targetDate"][8:10]))
             date = data.strftime("%A %d %B")
-            lesson = client.get_lesson(i["lesson"])
-            print(
-                f'Домашнее задание на {date} по предмету {lesson["subject"]["name"]}({lesson["number"]} урок):{i["text"]}')
+            lesson = self.get_lesson(i["lesson"])
+            a[lesson["number"]] = f'Предмет {lesson["subject"]["name"]}:{i["text"]}'
+        return a
 
