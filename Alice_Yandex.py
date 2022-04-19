@@ -1,3 +1,5 @@
+import json
+import logging
 import os
 
 from flask import Flask, request
@@ -43,17 +45,38 @@ def handle_dialog(req, res):
         return
 
     if 'https://login.school.mosreg.ru/oauth2/Authorization/Result?response_type=token&client_id' in req['request']['original_utterance']:
-        # Пользователь согласился, прощаемся.
+        # Пользователь авторизовался продолжаем общение.
         token = req['request']['original_utterance'][255:-7]
         res['response']['text'] = 'Спасибо, доступ предоставлен, теперь я могу сообщать Вам оценки' \
                                   f'Ваш токен: {token}'
         return
-    
-    if 'домашнее задание на завтра' in req['request']['original_utterance']:
-        client = Client('bnXpnw48AaqXawOW3OdZso40Q1kVYivv')
-        res['response']['text'] = client.my_homeworks("2022-04-14")[1]
 
-    # Если нет, то убеждаем его купить слона!
+    if req['request']['original_utterance'].lower() in [
+        'домашка',
+        'домашка на завтра',
+        'домашнее задание на завтра',
+        'домашнее задание'
+    ]:
+        client = Client(token)
+        res['response']['text'] = client.my_homeworks("2022-04-11 00:00:00", "2022-04-11 23:59:00")
+
+    if req['request']['original_utterance'].lower() in [
+        'оценки',
+        'мои оценки',
+        'мои оценки за сегодня',
+        'что получил сегодня'
+        ]:
+        client = Client(token)       # Здесь токен пользователя(Илья)
+        res['response']['text'] = client.get_person_marks_for_period("2022-04-11 00:00:00", "2022-04-11 23:59:00")
+
+    if req['request']['original_utterance'].lower() in [
+        'расписание',
+        'уроки',
+        'к какому '
+        ]:
+        client = Client(token)  # Здесь токен пользователя(Илья)
+        res['response']['text'] = client.get_school_timetable("2022-04-11 00:00:00", "2022-04-11 23:59:00")
+
     res['response']['text'] = \
         f"Спросите что-нибудь полегче"
     res['response']['end_session'] = True
