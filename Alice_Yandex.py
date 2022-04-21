@@ -4,6 +4,7 @@ from flask import Flask, request
 import logging
 import json
 from smapi import Client
+import datetime as dt
 
 app = Flask(__name__)
 
@@ -21,6 +22,7 @@ def main():
             'end_session': False
         }
     }
+    global token
     token = ''
     handle_dialog(request.json, response)
 
@@ -29,6 +31,9 @@ def main():
 
 
 def handle_dialog(req, res):
+    global future_date
+    future_date = dt.date.today() + dt.timedelta(days=1)
+
     user_id = req['session']['user_id']
 
     if req['session']['new']:
@@ -50,9 +55,10 @@ def handle_dialog(req, res):
                                   f'Ваш токен: {token}'
         return
 
-    if 'домашнее задание на завтра' in req['request']['original_utterance']:
+    elif req['request']['original_utterance'] in "домашнее задание на завтра" or "домашка":
         client = Client('OfN4nuja4zabUX3S0v5Hv3i2f28TnqQn')
-        res['response']['text'] = str(client.get_my_classmates()[1])
+        answer = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
+        res['response']['text'] = answer.values() # здесь надо доделать, выводится не совсем правильно
         return
 
     # Если нет, то убеждаем его купить слона!

@@ -1,5 +1,13 @@
 from smapi import Client
+import datetime
+import datetime as dt
+
+
+future_date = dt.date.today() + dt.timedelta(days=1)
+print(future_date)
 token = 'JzfJSkiCl8kuNuUifZvZqIBEFYVcNp9v'
 client = Client(token)
-print(client.my_homeworks("2022-04-18"))
-###res['response']['text'] = client.my_homeworks(date="2022-04-21")['1']
+
+answer = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
+print(answer.values())
+
