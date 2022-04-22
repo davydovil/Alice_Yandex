@@ -7,6 +7,7 @@ from smapi import Client
 import datetime
 
 app = Flask(__name__)
+users_tokens = {}
 
 logging.basicConfig(level=logging.INFO)
 sessionStorage = {}
@@ -43,14 +44,15 @@ def handle_dialog(req, res, token):
         if 'https://login.school.mosreg.ru/oauth2/Authorization/Result?response_type=token&client_id' in req['request'][
             'original_utterance']:
             token = req['request']['original_utterance'][255:-7]
+            users_tokens[user_id] = token
             res['response']['text'] = 'Доступ предоставлен.'
             return
     elif req['session']['new'] and token != '':
         res['response']['text'] = 'Что вам подсказать?'
         return
 
-    if 'домашнее задание на завтра' in req['request']['original_utterance']:
-        client = Client(token)
+    if 'домашнее задание на завтра' in req['request']['original_utterance'] and user_id in users_tokens.keys():
+        client = Client(users_tokens[user_id])
         res['response']['text'] = client.my_homeworks(datetime.date.today() + datetime.timedelta(days=1))
         return
 
