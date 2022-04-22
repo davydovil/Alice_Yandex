@@ -59,7 +59,7 @@ def handle_dialog(req, res):
         client = Client('OfN4nuja4zabUX3S0v5Hv3i2f28TnqQn')
 
         ans1 = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
-        res['response']['text'] = ''.join(list(ans1.values()))
+        res['response']['text'] = ' '.join(list(ans1.values()))
         return
 
     # Если нет, то убеждаем его купить слона!
