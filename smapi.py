@@ -591,3 +591,12 @@ class Client(APIBase):
             a[lesson["number"]] = f'{lesson["subject"]["name"]}:{i["text"]}'
         return a
 
+    def my_marks(self, date):
+        a = {}
+        id = self.get_me()['personId']
+        mark = self.get_person_marks_for_period(id, date + "00:00:00")
+        for i in mark:
+            lesson = self.get_lesson(int(i["lesson_str"]))
+            a[lesson["number"]] = f'{lesson["subject"]["name"]}:{i["value"]}'
+        return a
+

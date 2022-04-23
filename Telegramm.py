@@ -31,7 +31,17 @@ def get_text_messages(message):
     elif message.text.lower() == "домашнее задание" or message.text.lower() == "/homework":
         client = Client(get_token(message.from_user.id)[0][0])
         if datetime.date.today().weekday() == 6 or datetime.date.today().weekday() == 7:
-            gg = client.my_homeworks(datetime.date.today() - datetime.timedelta(days=1))
+            gg = client.my_homeworks(datetime.date.today() + datetime.timedelta(days=3))
+            for i in sorted(gg.keys()):
+                bot.send_message(message.from_user.id, f"{i} урок: {gg[i]}")
+    elif message.text.lower() == 'оценки':
+        client = Client(get_token(message.from_user.id)[0][0])
+        if datetime.date.today().weekday() == 6 or datetime.date.today().weekday() == 7:
+            gg = client.my_marks(str(datetime.date.today() - datetime.timedelta(days=6)))
+            for i in sorted(gg.keys()):
+                bot.send_message(message.from_user.id, f"{i} урок: {gg[i]}")
+        else:
+            gg = client.my_marks(str(datetime.date.today()))
             for i in sorted(gg.keys()):
                 bot.send_message(message.from_user.id, f"{i} урок: {gg[i]}")
     else:
