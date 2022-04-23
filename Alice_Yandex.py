@@ -5,7 +5,7 @@ import logging
 import json
 from smapi import Client
 import datetime
-from WorkingWithDB import new_user, get_token
+from database_toAlice import new_user, get_token
 
 app = Flask(__name__)
 

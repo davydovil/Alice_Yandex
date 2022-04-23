@@ -588,6 +588,6 @@ class Client(APIBase):
             data = datetime.datetime(int(i["targetDate"][:4]), int(i["targetDate"][5:7]), int(i["targetDate"][8:10]))
             date = data.strftime("%A %d %B")
             lesson = self.get_lesson(i["lesson"])
-            a[lesson["number"]] = f'Предмет {lesson["subject"]["name"]}:{i["text"]}'
+            a[lesson["number"]] = f'{lesson["subject"]["name"]}:{i["text"]}'
         return a
 

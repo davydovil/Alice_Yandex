@@ -11,7 +11,7 @@ connection.close()
 def new_user(user_id, token):
     connection_new = sqlite3.connect('users.db')
     cursor_new = connection_new.cursor()
-    cursor_new.execute(f'''INSERT INTO User(user_id,Token) VALUES({user_id},{token})''')
+    cursor_new.execute(f'''INSERT INTO Users(user_id,Token) VALUES('{user_id}','{token}')''')
     connection_new.commit()
     connection_new.close()
 
@@ -19,7 +19,7 @@ def new_user(user_id, token):
 def get_token(user_id):
     con = sqlite3.connect("users.db")
     cur = con.cursor()
-    result = cur.execute(f"""SELECT * FROM Users
+    result = cur.execute(f"""SELECT Token FROM Users
                 WHERE user_id = {user_id}""").fetchall()
     con.close()
     return result
