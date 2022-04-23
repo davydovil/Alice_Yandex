@@ -55,12 +55,22 @@ def handle_dialog(req, res):
                                   f'Ваш токен: {token}'
         return
 
-    elif req['request']['original_utterance'] in "домашнее задание на завтра" or "домашка":
+    if req['request']['original_utterance'] in "домашнее задание на завтра" or "домашка":
         client = Client('OfN4nuja4zabUX3S0v5Hv3i2f28TnqQn')
 
         ans1 = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
         res['response']['text'] = ' '.join(list(ans1.values()))
         return
+
+    if req['request']['original_utterance'] in "расписание на завтра" or "расписание":
+        client = Client('OfN4nuja4zabUX3S0v5Hv3i2f28TnqQn')
+        ans1 = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
+        answer_full = ()
+        for elem in ans1.values():
+            answer_full += (elem.split(':')[0])
+        res['response']['text'] = answer_full
+        return
+
 
     # Если нет, то убеждаем его купить слона!
     res['response']['text'] = \
