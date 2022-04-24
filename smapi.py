@@ -1,7 +1,5 @@
 import datetime
 import operator
-import datetime as dt
-
 from requests import Session
 
 
@@ -591,3 +589,22 @@ class Client(APIBase):
             a[lesson["number"]] = f'{lesson["subject"]["name"]}:{i["text"]}'
         return a
 
+    def my_marks(self, date):
+        a = {}
+        id = self.get_me()['personId']
+        mark = self.get_person_marks_for_period(id, date + "00:00:00")
+        for i in mark:
+            lesson = self.get_lesson(i["lesson_str"])
+            a[lesson["number"]] = f'{lesson["subject"]["name"]}:{i["value"]}'
+        return a
+
+    def my_timetable(self, date):
+        a = {}
+        school_id = self.get_my_context()['schools'][0]['id']
+        homework = self.get_school_homework_for_date_period(school_id, f'{date} 00:00:00', f'{date} 23:59:00')[
+            "works"]
+        homework.sort(key=operator.itemgetter('targetDate'))
+        for i in homework:
+            lesson = self.get_lesson(i["lesson"])
+            a[lesson["number"]] = f'{lesson["subject"]["name"]}'
+        return a

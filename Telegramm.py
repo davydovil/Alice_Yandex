@@ -14,6 +14,7 @@ def get_text_messages(message):
         user_id = message.from_user.id
         if get_token(user_id):
             bot.send_message(message.from_user.id, 'Доступ предоставлен')
+            bot.send_message(message.from_user.id, 'Возможные функции: домашнее задание, расписание, оценки')
         else:
             bot.send_message(message.from_user.id,
                              "Разрешите мне просматривать ваш Школьный портал. Для этого перейдите по ссылке")
@@ -34,6 +35,26 @@ def get_text_messages(message):
             gg = client.my_homeworks(datetime.date.today() - datetime.timedelta(days=1))
             for i in sorted(gg.keys()):
                 bot.send_message(message.from_user.id, f"{i} урок: {gg[i]}")
+    elif message.text.lower() == 'оценки' or message.text.lower() == '/marks':
+        client = Client(get_token(message.from_user.id)[0][0])
+        if datetime.date.today().weekday() == 6 or datetime.date.today().weekday() == 7:
+            gg = client.my_marks(str(datetime.date.today() - datetime.timedelta(days=6)))
+            for i in sorted(gg.keys()):
+                bot.send_message(message.from_user.id, f"{i} урок: {gg[i]}")
+        else:
+            gg = client.my_marks(str(datetime.date.today()))
+    elif message.text.lower() == 'расписание' or message.text.lower() == '/timetable':
+        text = ''
+        client = Client(get_token(message.from_user.id)[0][0])
+        if datetime.date.today().weekday() == 6:
+            gg = client.my_timetable(str(datetime.date.today() + datetime.timedelta(days=2)))
+        elif datetime.date.today().weekday() == 5:
+            gg = client.my_timetable(str(datetime.date.today() + datetime.timedelta(days=3)))
+        else:
+            gg = client.my_timetable(str(datetime.date.today() + datetime.timedelta(days=1)))
+        for i in sorted(gg.keys()):
+            text += f"{i} урок: {gg[i]}\n"
+        bot.send_message(message.from_user.id, text)
     else:
         bot.send_message(message.from_user.id, "Я тебя не понимаю. Напиши /help.")
 
