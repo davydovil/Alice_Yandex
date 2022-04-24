@@ -1,50 +1,13 @@
 from smapi import Client
-import datetime
 import datetime as dt
 
-
-future_date = dt.date.today() + dt.timedelta(days=-5)
-today = dt.date.today()
-print(future_date)
-token = 'KnPluy1laXn42n6QNh8FjqcObzFIlRAB'
-client = Client(token)
-person_id = client.get_me()
+client = Client("r8eDzp0Vp645u89rzbjaiHOAd8eoMPSy")
+future_date = dt.date.today() + dt.timedelta(days=1)
 ans1 = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
-s = ' '.join(list(ans1.values()))
-
-sub = ["Математика (алгебра)", "Русский язык", "Химия", "Биология", "Литература", "География", "ОБЖ",
-       "Математика (геом.)", "Физика", "Обществознание", "Право", "Физическая культура", "Иностр. язык (англ.)",
-       "Информатика", "История", "Родня литература", "Родной язык", "Инд.проект"]
-
-hui = []
-
-for i in range(len(sub)):
-    if sub[i] in s:
-        hui.append(sub[i])
-        print(sub[i])
-
-# for i in range(len(hui)):
-    # if hui[i] in s:
-        # print(hui[i])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-print(" ")
-print(s)
-
+answer_full = ""
+for elem in ans1.values():
+    answer_full += f'{(elem.split(":")[0])}\n'
+print(answer_full)
 
 # print(client.get_my_context()["groupIds"])
 # print(client.get_group_timetable(group_id=1845266896493888494))

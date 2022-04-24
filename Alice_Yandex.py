@@ -63,11 +63,11 @@ def handle_dialog(req, res):
         return
 
     if req['request']['original_utterance'] in "расписание на завтра" or "расписание":
-        client = Client('OfN4nuja4zabUX3S0v5Hv3i2f28TnqQn')
+        client = Client("r8eDzp0Vp645u89rzbjaiHOAd8eoMPSy")
         ans1 = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
-        answer_full = ()
+        answer_full = ""
         for elem in ans1.values():
-            answer_full += (elem.split(':')[0])
+            answer_full += f'{(elem.split(":")[0])}\n'
         res['response']['text'] = answer_full
         return
 
