@@ -6,3 +6,5 @@ setuptools~=49.2.1
 future~=0.18.2
 requests~=2.27.1
 Flask~=2.0.3
+telebot~=0.0.4
+pytelegrambotapi
