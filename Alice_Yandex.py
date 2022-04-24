@@ -4,7 +4,8 @@ from flask import Flask, request
 import logging
 import json
 from smapi import Client
-import datetime
+import datetime as dt
+from database_toAlice import new_user, get_token
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ sessionStorage = {}
 
 @app.route('/post', methods=['POST'])
 def main():
-    token = ''
+    future_date = None
     logging.info(f'Request: {request.json!r}')
     response = {
         'session': request.json['session'],
@@ -23,42 +24,62 @@ def main():
             'end_session': False
         }
     }
-    handle_dialog(request.json, response, token)
+
+    handle_dialog(request.json, response)
 
     logging.info(f'Response:  {response!r}')
     return json.dumps(response)
 
 
-def handle_dialog(req, res, token):
+def handle_dialog(req, res):
+    future_date = dt.date.today() + dt.timedelta(days=1)
+
     user_id = req['session']['user_id']
 
-    if req['session']['new'] and token == '':
-        res['response']['text'] = 'Разрешите мне просматривать ваш Школьный портал ' \
-                                  'https://login.school.mosreg.ru/oauth2?response_type=token&client_id=bafe713c96a342b194d040392cadf82b&scope=CommonInfo,ContactInfo,FriendsAndRelatives,EducationalInfo,SocialInfo&redirect_uri=' \
-                                  'После скопируйте адрес страницы этой страницы'
+    if req['session']['new']:
+        res['response']['text'] = 'Привет! Я научилась работать со школьным порталом. Предоставь мне к нему доступ' \
+                                  'Для этого перейдите по ссылке:' \
+                                  'После того, как дадите разрешение, скопируйте ссылку страницы,' \
+                                  ' на которую вас перенаправили и отправьте её мне:)'
+        res['response']['buttons'] = []
+        reg_url_button = {'url': "https://catsee.ru/", 'title': 'Ссыль', 'hide': True}
+        res['response']['buttons'].append(reg_url_button)
 
-        res['response']['tts'] = 'Разрешите мне просматривать ваш Школьный портал. Перейдите по ссылке' \
-                                 'и После скопируйте адрес этой страницы'
+        res['response']['tts'] = 'Привет! Я научилась работать со школьным порталом. Предоставь мне к нему доступ ' \
+                                 'Для этого перейдите по ссылке.'
 
-        if 'https://login.school.mosreg.ru/oauth2/Authorization/Result?response_type=token&client_id' in req['request'][
-            'original_utterance']:
-            token = req['request']['original_utterance'][255:-7]
-            res['response']['text'] = 'Доступ предоставлен.'
-            return
-    elif req['session']['new'] and token != '':
-        res['response']['text'] = 'Что вам подсказать?'
+        return res
+
+    elif 'https://login.school.mosreg.ru/oauth2/Authorization/Result?response_type=token&client_id' in \
+            req['request']['original_utterance']:
+
+        token = req['request']['original_utterance'][255:-7]
+        new_user(user_id, token)
+        res['response']['text'] = f'Спасибо, доступ предоставлен'
         return
 
-    if 'домашнее задание на завтра' in req['request']['original_utterance']:
-        client = Client(token)
-        res['response']['text'] = client.my_homeworks(datetime.date.today() + datetime.timedelta(days=1))
+    elif req['session']['new'] and get_token(user_id) == '':
+        res['response']['text'] = 'Что тебе подсказать?'
+        res['response']['buttons'] = []
+        homework_button = {}
+        homework_button['title'] = 'домашка'
+        res['response']['buttons'].append(homework_button)
+        b = {}
+        b['title'] = 'расписание'
+        res['response']['buttons'].append(b)
         return
 
-    # Если нет, то убеждаем его купить слона!
-    res['response']['text'] = \
-        f"Спросите что-нибудь полегче"
-    res['response']['end_session'] = True
-    return
+    elif "домашнее задание на завтра" in req['request']['original_utterance'] or "домашка" in \
+            req['request']['original_utterance'] and get_token(user_id) != '':
+        client = Client(get_token(user_id))
+        ans1 = dict(sorted(client.my_homeworks(future_date).items(), key=lambda f: int(f[0])))
+        res['response']['text'] = ' '.join(list(ans1.values()))
+        return
+
+    else:
+        res['response']['text'] = \
+            f"Спросите что-нибудь полегче"
+        return
 
 
 if __name__ == '__main__':
